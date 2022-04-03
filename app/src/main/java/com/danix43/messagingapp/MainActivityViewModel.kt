@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.danix43.messagingapp.data.Conversation
+import com.danix43.messagingapp.data.models.Conversation
 
 class MainActivityViewModel : ViewModel() {
 
@@ -22,6 +22,10 @@ class MainActivityViewModel : ViewModel() {
 
     private fun loadConversations() {
         Log.d(TAG, "loadConversations: loading conversations")
+    }
+
+    fun createNewConvo() {
+        Log.d(TAG, "createNewConvo: clicked")
     }
 
 }
