@@ -5,6 +5,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.danix43.messagingapp.data.models.Conversation
+import java.text.SimpleDateFormat
+import java.util.*
 
 class MainActivityViewModel : ViewModel() {
 
@@ -14,6 +16,22 @@ class MainActivityViewModel : ViewModel() {
         MutableLiveData<List<Conversation>>().also {
             loadConversations()
         }
+    }
+
+    fun retrieveHeaderMessage(): String {
+        val time = SimpleDateFormat("HH", Locale.getDefault()).toString()
+
+        var addressing = ""
+        if (time == "12") {
+            addressing = "Good noon"
+        }
+        if (time >= "12") {
+            addressing = "Good afternoon"
+        }
+        if (time <= "12") {
+            addressing = "Good morning"
+        }
+        return addressing
     }
 
     fun getConversations(): LiveData<List<Conversation>> {
