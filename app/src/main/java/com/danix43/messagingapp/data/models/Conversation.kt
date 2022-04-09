@@ -4,5 +4,6 @@ data class Conversation(
     var id: Long,
     var sender: Account,
     var receiver: Account,
-    var messages: List<Message>
+    var messages: List<Message>,
+    var seen: Boolean
 )

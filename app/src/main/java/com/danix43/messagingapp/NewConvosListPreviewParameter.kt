@@ -9,17 +9,18 @@ import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.random.Random
 
-class ConvosPreviewParameterProvider : PreviewParameterProvider<List<Conversation>> {
+class NewConvosListPreviewParameter : PreviewParameterProvider<Map<Boolean, List<Conversation>>> {
 
     private val account1 =
         Account(Random(1233).nextLong(), "User 1", "email1@gmail.com", "1234", emptyArray())
     private val account2 =
         Account(Random(1233).nextLong(), "User 1", "email1@gmail.com", "1234", emptyArray())
 
-    private fun generateConvoList(): List<Conversation> {
-        val list: ArrayList<Conversation> = ArrayList()
+    private fun generateConvoList(): Map<Boolean, List<Conversation>> {
+        val listSeenTrue: ArrayList<Conversation> = ArrayList()
+        val listSeenFalse: ArrayList<Conversation> = ArrayList()
 
-        for (i in 1..5) {
+        for (i in 1..10) {
             val message = Message(
                 Random.nextLong(),
                 account1,
@@ -30,11 +31,10 @@ class ConvosPreviewParameterProvider : PreviewParameterProvider<List<Conversatio
             val convo =
                 Conversation(Random.nextLong(), account1, account2, arrayListOf(message), true)
 
-            list.add(convo)
+            listSeenTrue.add(convo)
         }
 
-
-        for (i in 6..10) {
+        for (i in 11..21) {
             val message = Message(
                 Random.nextLong(),
                 account1,
@@ -45,15 +45,13 @@ class ConvosPreviewParameterProvider : PreviewParameterProvider<List<Conversatio
             val convo =
                 Conversation(Random.nextLong(), account1, account2, arrayListOf(message), false)
 
-            list.add(convo)
+            listSeenFalse.add(convo)
         }
 
-        return list
-
+        return mapOf(true to listSeenTrue, false to listSeenFalse)
     }
 
-    override val values: Sequence<List<Conversation>> = sequenceOf(
+    override val values: Sequence<Map<Boolean, List<Conversation>>> = sequenceOf(
         generateConvoList()
     )
-
 }

@@ -4,9 +4,12 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.danix43.messagingapp.data.models.Account
 import com.danix43.messagingapp.data.models.Conversation
+import com.danix43.messagingapp.data.models.Message
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.random.Random
 
 class MainActivityViewModel : ViewModel() {
 
@@ -34,8 +37,44 @@ class MainActivityViewModel : ViewModel() {
         return addressing
     }
 
-    fun getConversations(): LiveData<List<Conversation>> {
-        return conversations
+    fun getConversations(): LiveData<Map<Boolean, List<Conversation>>> {
+        val account1 =
+            Account(Random(1233).nextLong(), "User 1", "email1@gmail.com", "1234", emptyArray())
+        val account2 =
+            Account(Random(1233).nextLong(), "User 1", "email1@gmail.com", "1234", emptyArray())
+
+        val listSeenTrue: ArrayList<Conversation> = ArrayList()
+        val listSeenFalse: ArrayList<Conversation> = ArrayList()
+
+        for (i in 1..10) {
+            val message = Message(
+                Random.nextLong(),
+                account1,
+                account2,
+                "message number $i",
+                SimpleDateFormat("HH:mm", Locale.getDefault())
+            )
+            val convo =
+                Conversation(Random.nextLong(), account1, account2, arrayListOf(message), true)
+
+            listSeenTrue.add(convo)
+        }
+
+        for (i in 11..21) {
+            val message = Message(
+                Random.nextLong(),
+                account1,
+                account2,
+                "message number $i",
+                SimpleDateFormat("HH:mm", Locale.getDefault())
+            )
+            val convo =
+                Conversation(Random.nextLong(), account1, account2, arrayListOf(message), false)
+
+            listSeenFalse.add(convo)
+        }
+
+        return MutableLiveData(mapOf(true to listSeenTrue, false to listSeenFalse))
     }
 
     private fun loadConversations() {
@@ -44,6 +83,11 @@ class MainActivityViewModel : ViewModel() {
 
     fun createNewConvo() {
         Log.d(TAG, "createNewConvo: clicked")
+    }
+
+
+    private fun generateConversations() {
+
     }
 
 }

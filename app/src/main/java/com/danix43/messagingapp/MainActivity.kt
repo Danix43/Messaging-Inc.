@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -51,7 +52,7 @@ class MainActivity : ComponentActivity() {
             MessagingAppTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background
+                    color = MaterialTheme.colors.primary
                 ) {
                     RootElement()
                 }
@@ -62,11 +63,14 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     fun Header() {
-//        val salute = viewModel.retrieveHeaderMessage()
-        val salute = "Good afternoon, Dani!"
-        Text(salute, style = MaterialTheme.typography.h1, fontSize = 32.sp)
+//        val salute = "Good afternoon, Dani!"
+        Text(
+            viewModel.retrieveHeaderMessage(),
+            style = MaterialTheme.typography.h1,
+            fontSize = 32.sp,
+//            modifier = Modifier.padding(5.dp, 5.dp)
+        )
     }
-
 
     @Preview
     @Composable
@@ -121,17 +125,20 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    @OptIn(ExperimentalFoundationApi::class)
     @Preview
     @Composable
-    fun MissedOutConvoList(
-        @PreviewParameter(ConvosPreviewParameterProvider::class) convos: List<Conversation>
-    ) {
-        Column {
-            Text(
-                "Here is what you missed out", fontSize = 22.sp, fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(0.dp, 5.dp)
-            )
-            LazyColumn(verticalArrangement = Arrangement.spacedBy(15.dp)) {
+    fun ConversationsList(@PreviewParameter(NewConvosListPreviewParameter::class) groupedConvos: Map<Boolean, List<Conversation>>) {
+        LazyColumn(verticalArrangement = Arrangement.spacedBy(20.dp)) {
+            groupedConvos.forEach { (seen, convos) ->
+                stickyHeader {
+                    Text(
+                        if (seen) "Here is what you missed out" else "Recap old conversations",
+                        fontSize = 22.sp,
+                        fontWeight = FontWeight.Bold,
+//                        modifier = Modifier.padding(0.dp, 5.dp)
+                    )
+                }
                 items(convos) { convo ->
                     ConvoListElement(convo)
                 }
@@ -139,29 +146,13 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    @Preview
-    @Composable
-    fun OldConvoList(
-        @PreviewParameter(ConvosPreviewParameterProvider::class) convos: List<Conversation>
-    ) {
-        Column {
-            Text(
-                "Recap old conversations", fontSize = 22.sp, fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(0.dp, 5.dp)
-            )
-            LazyColumn(verticalArrangement = Arrangement.spacedBy(15.dp)) {
-                items(convos) { convo ->
-                    ConvoListElement(convo)
-                }
-            }
-        }
-    }
 
     @Composable
     fun Content() {
-        Column {
+        Column(modifier = Modifier.padding(10.dp, 0.dp, 10.dp, 0.dp)) {
             Header()
 
+            viewModel.getConversations().value?.let { ConversationsList(groupedConvos = it) }
         }
     }
 
@@ -182,6 +173,7 @@ class MainActivity : ComponentActivity() {
             },
             floatingActionButtonPosition = FabPosition.Center,
             isFloatingActionButtonDocked = true,
+            backgroundColor = MaterialTheme.colors.primary,
             content = { Content() },
             bottomBar = {
                 BottomBar()
@@ -204,14 +196,20 @@ class MainActivity : ComponentActivity() {
                             Icons.Default.AccountCircle,
                             contentDescription = "Your Profile"
                         )
-                        Text("Your Profile", style = MaterialTheme.typography.body1)
+                        Text(
+                            "Your Profile", style = MaterialTheme.typography.body1,
+                            fontSize = 15.sp
+                        )
                     }
                 }
                 Spacer(Modifier.weight(1f, true))
                 IconButton(onClick = { /*TODO*/ }) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Icon(Icons.Default.Settings, contentDescription = "Settings")
-                        Text("Settings", style = MaterialTheme.typography.body1)
+                        Text(
+                            "Settings", style = MaterialTheme.typography.body1,
+                            fontSize = 15.sp
+                        )
                     }
                 }
             }

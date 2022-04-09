@@ -43,7 +43,8 @@ class ConvoPreviewParameterProvider : PreviewParameterProvider<Conversation> {
                     "test3jkdsfhgkjshdnognbdsofgbsdp;gfb",
                     SimpleDateFormat("MMMMddyyyyHHmm", Locale.getDefault())
                 )
-            )
+            ),
+            true
         ),
         Conversation(
             Random(123).nextLong(),
@@ -71,7 +72,8 @@ class ConvoPreviewParameterProvider : PreviewParameterProvider<Conversation> {
                     "test3",
                     SimpleDateFormat("MMMMddyyyyHHmm", Locale.getDefault())
                 )
-            )
+            ),
+            true
         )
     )
 }
